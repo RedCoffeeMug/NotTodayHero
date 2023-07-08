@@ -19,3 +19,8 @@ func handle_input():
 		velocity.x += 1
 	velocity.normalized()
 	move_and_slide(velocity * speed)
+
+
+
+func _ready():
+	$Player/AnimationPlayer.play("Idle")
