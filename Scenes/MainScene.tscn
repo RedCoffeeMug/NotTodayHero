@@ -1,8 +1,8 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Scripts/MainScene.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://icon.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Cat.png" type="Texture" id=3]
 [ext_resource path="res://Assets/TileMap.png" type="Texture" id=4]
 [ext_resource path="res://Scripts/Enemy.gd" type="Script" id=5]
 
@@ -123,8 +123,141 @@ vertices = PoolVector2Array( 969, 58, 967, 552, 62, 552, 64, 59, 951, 57 )
 polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ) ]
 outlines = [ PoolVector2Array( 951, 57, 64, 59, 62, 552, 967, 552, 969, 58 ) ]
 
-[sub_resource type="RectangleShape2D" id=7]
-extents = Vector2( 27, 28.5 )
+[sub_resource type="CircleShape2D" id=7]
+radius = 14.0801
+
+[sub_resource type="Animation" id=8]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "idle"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 1 ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "walk_down"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2 ]
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "walk_left"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 3, 4, 5 ]
+}
+
+[sub_resource type="Animation" id=12]
+resource_name = "walk_right"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 6, 7, 8 ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "walk_up"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 9, 10, 11 ]
+}
+
+[sub_resource type="AnimationNodeAnimation" id=16]
+animation = "idle"
+
+[sub_resource type="AnimationNodeAnimation" id=18]
+animation = "walk_left"
+
+[sub_resource type="AnimationNodeAnimation" id=19]
+animation = "walk_right"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=21]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=22]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=31]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=32]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=33]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=34]
+
+[sub_resource type="AnimationNodeStateMachine" id=14]
+states/idle/node = SubResource( 16 )
+states/idle/position = Vector2( 1, -31 )
+states/walk_left/node = SubResource( 18 )
+states/walk_left/position = Vector2( 333, -133 )
+states/walk_right/node = SubResource( 19 )
+states/walk_right/position = Vector2( 640, -42 )
+transitions = [ "idle", "walk_left", SubResource( 21 ), "walk_left", "idle", SubResource( 22 ), "idle", "walk_right", SubResource( 31 ), "walk_right", "idle", SubResource( 32 ), "walk_right", "walk_left", SubResource( 33 ), "walk_left", "walk_right", SubResource( 34 ) ]
+start_node = "idle"
+graph_offset = Vector2( -86.3149, -94 )
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=15]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource( 1 )
@@ -147,16 +280,32 @@ script = ExtResource( 5 )
 path_to_player = NodePath("../../Player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Navigation2D/Enemy"]
-position = Vector2( 0, -0.5 )
+position = Vector2( 0, 1 )
+scale = Vector2( 1.0748, 1.03757 )
 shape = SubResource( 7 )
 
 [node name="Sprite" type="Sprite" parent="Navigation2D/Enemy"]
 texture = ExtResource( 3 )
+hframes = 12
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Navigation2D/Enemy"]
+anims/RESET = SubResource( 8 )
+anims/idle = SubResource( 9 )
+anims/walk_down = SubResource( 10 )
+anims/walk_left = SubResource( 11 )
+anims/walk_right = SubResource( 12 )
+anims/walk_up = SubResource( 13 )
+
+[node name="AnimationTree" type="AnimationTree" parent="Navigation2D/Enemy"]
+tree_root = SubResource( 14 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/playback = SubResource( 15 )
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="Navigation2D/Enemy"]
 target_desired_distance = 20.0
 
-[node name="Timer" type="Timer" parent="Navigation2D/Enemy"]
+[node name="UpdatePathfinding" type="Timer" parent="Navigation2D/Enemy"]
 autostart = true
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
