@@ -1,10 +1,13 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://Scripts/MainScene.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/Cat.png" type="Texture" id=3]
 [ext_resource path="res://Assets/TileMap.png" type="Texture" id=4]
 [ext_resource path="res://Scripts/Enemy.gd" type="Script" id=5]
+[ext_resource path="res://Themes/MainTheme.tres" type="Theme" id=6]
+[ext_resource path="res://Sound/Die_sound.wav" type="AudioStream" id=7]
+[ext_resource path="res://Sound/Hurt.wav" type="AudioStream" id=8]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
@@ -123,8 +126,8 @@ vertices = PoolVector2Array( 969, 58, 967, 552, 62, 552, 64, 59, 951, 57 )
 polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ) ]
 outlines = [ PoolVector2Array( 951, 57, 64, 59, 62, 552, 967, 552, 969, 58 ) ]
 
-[sub_resource type="CircleShape2D" id=7]
-radius = 14.0801
+[sub_resource type="RectangleShape2D" id=37]
+extents = Vector2( 12.5486, 11.6728 )
 
 [sub_resource type="Animation" id=8]
 length = 0.001
@@ -154,7 +157,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ 1 ]
+"values": [ 4 ]
 }
 
 [sub_resource type="Animation" id=10]
@@ -255,9 +258,15 @@ states/walk_right/node = SubResource( 19 )
 states/walk_right/position = Vector2( 640, -42 )
 transitions = [ "idle", "walk_left", SubResource( 21 ), "walk_left", "idle", SubResource( 22 ), "idle", "walk_right", SubResource( 31 ), "walk_right", "idle", SubResource( 32 ), "walk_right", "walk_left", SubResource( 33 ), "walk_left", "walk_right", SubResource( 34 ) ]
 start_node = "idle"
-graph_offset = Vector2( -86.3149, -94 )
+graph_offset = Vector2( -223.315, -173 )
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=15]
+
+[sub_resource type="RectangleShape2D" id=38]
+extents = Vector2( 31, 16 )
+
+[sub_resource type="CircleShape2D" id=36]
+radius = 24.4901
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource( 1 )
@@ -272,6 +281,7 @@ tile_data = PoolIntArray( 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0, 4, 1, 0, 5, 1, 0, 
 [node name="Navigation2D" type="Navigation2D" parent="."]
 
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navigation2D"]
+visible = false
 navpoly = SubResource( 6 )
 
 [node name="Enemy" type="KinematicBody2D" parent="Navigation2D"]
@@ -280,9 +290,9 @@ script = ExtResource( 5 )
 path_to_player = NodePath("../../Player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Navigation2D/Enemy"]
-position = Vector2( 0, 1 )
-scale = Vector2( 1.0748, 1.03757 )
-shape = SubResource( 7 )
+position = Vector2( 0.5, 5 )
+scale = Vector2( 1.55395, 1.1137 )
+shape = SubResource( 37 )
 
 [node name="Sprite" type="Sprite" parent="Navigation2D/Enemy"]
 texture = ExtResource( 3 )
@@ -302,10 +312,87 @@ anim_player = NodePath("../AnimationPlayer")
 active = true
 parameters/playback = SubResource( 15 )
 
+[node name="AttackDetector" type="Area2D" parent="Navigation2D/Enemy"]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Navigation2D/Enemy/AttackDetector"]
+modulate = Color( 0.337255, 0.0235294, 0, 1 )
+position = Vector2( -6, 3 )
+shape = SubResource( 38 )
+
+[node name="PlayerDetector" type="Area2D" parent="Navigation2D/Enemy"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Navigation2D/Enemy/PlayerDetector"]
+modulate = Color( 0.960784, 0.862745, 0.0784314, 1 )
+position = Vector2( -6, 2 )
+scale = Vector2( 1.10249, -0.910977 )
+shape = SubResource( 36 )
+
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="Navigation2D/Enemy"]
-target_desired_distance = 20.0
+target_desired_distance = 40.0
 
 [node name="UpdatePathfinding" type="Timer" parent="Navigation2D/Enemy"]
 autostart = true
 
+[node name="PlayerDetectorTimer" type="Timer" parent="Navigation2D/Enemy"]
+wait_time = 1.7
+
 [node name="Player" parent="." instance=ExtResource( 2 )]
+
+[node name="PlayerHealth" type="ProgressBar" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 295.0
+margin_top = 15.0
+margin_right = 698.0
+margin_bottom = 29.0
+theme = ExtResource( 6 )
+max_value = 200.0
+step = 1.0
+value = 200.0
+percent_visible = false
+
+[node name="HealthTitle" type="RichTextLabel" parent="PlayerHealth"]
+margin_left = 143.0
+margin_top = 15.0
+margin_right = 262.0
+margin_bottom = 35.0
+text = "The Great Spider Mech"
+
+[node name="UpdateHealth" type="Timer" parent="PlayerHealth"]
+wait_time = 0.1
+autostart = true
+
+[node name="EnemyHealth" type="ProgressBar" parent="."]
+margin_left = 133.0
+margin_top = 559.0
+margin_right = 309.0
+margin_bottom = 575.0
+theme = ExtResource( 6 )
+max_value = 110.0
+percent_visible = false
+
+[node name="EnemyTitle" type="RichTextLabel" parent="EnemyHealth"]
+margin_left = -99.0
+margin_top = -41.0
+margin_right = -2.0
+margin_bottom = 16.0
+text = "Player
+Roles: Cat
+Speed: 20
+Max Health: 110"
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+
+[node name="Hurt" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 8 )
+volume_db = -4.37
+
+[connection signal="body_entered" from="Navigation2D/Enemy/PlayerDetector" to="Navigation2D/Enemy" method="_on_PlayerDetector_body_entered"]
+[connection signal="body_exited" from="Navigation2D/Enemy/PlayerDetector" to="Navigation2D/Enemy" method="_on_PlayerDetector_body_exited"]
+[connection signal="timeout" from="Navigation2D/Enemy/PlayerDetectorTimer" to="Navigation2D/Enemy" method="_on_PlayerDetectorTimer_timeout"]
+[connection signal="timeout" from="PlayerHealth/UpdateHealth" to="." method="_on_UpdateHealth_timeout"]

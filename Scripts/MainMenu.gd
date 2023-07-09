@@ -29,17 +29,19 @@ func _ready():
 
 
 func _on_StartButton_pressed():
-	SceneTransition.change_scene("res://Scenes/MainScene.tscn"	)
-
+	SceneTransition.change_scene("res://Scenes/MainScene.tscn")
+	$click.play()
 
 
 
 func _on_Credits_pressed():
 	CreditsPanel.show()
+	$click.play()
 
 
 func _on_CreditsCloseButton_pressed():
 	CreditsPanel.hide()
+	$click.play()
 
 
 

@@ -16,6 +16,7 @@ func _ready() -> void:
 	_update_pathfinding()
 	_timer.connect("timeout", self, "_update_pathfinding")
 
+
 func _physics_process(delta: float) -> void:
 	if _agent.is_navigation_finished():
 		return
@@ -38,3 +39,22 @@ func _physics_process(delta: float) -> void:
 
 func _update_pathfinding() -> void:
 	_agent.set_target_location(_player.global_position)
+
+
+
+func _on_PlayerDetector_body_entered(body):
+	Playervars.playerhealth -= 5
+	$PlayerDetectorTimer.start()
+	$"../../Hurt".play()
+
+
+
+
+func _on_PlayerDetector_body_exited(body):
+	$PlayerDetectorTimer.stop()
+
+
+func _on_PlayerDetectorTimer_timeout():
+	Playervars.playerhealth -= 5
+	$"../../Hurt".play()
+
