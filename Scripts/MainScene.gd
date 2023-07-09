@@ -5,6 +5,10 @@ func _ready():
 	$PlayerHealth.max_value = Playervars.MAX_HEALTH
 	$EnemyHealth.max_value = Playervars.MAX_ENEMY_HEALTH
 
+func _process(delta):
+	if $Music.playing == false:
+		$Music.play()
+
 func set_health_bar() -> void:
 	$PlayerHealth.value = Playervars.playerhealth
 	$EnemyHealth.value = Playervars.enemyhealth

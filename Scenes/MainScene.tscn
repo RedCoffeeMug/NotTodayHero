@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://Scripts/MainScene.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://Themes/MainTheme.tres" type="Theme" id=6]
 [ext_resource path="res://Sound/Die_sound.wav" type="AudioStream" id=7]
 [ext_resource path="res://Sound/Hurt.wav" type="AudioStream" id=8]
+[ext_resource path="res://Sound/Bossfight-music.wav" type="AudioStream" id=9]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
@@ -390,7 +391,11 @@ stream = ExtResource( 7 )
 
 [node name="Hurt" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 8 )
-volume_db = -4.37
+volume_db = -5.431
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 9 )
+volume_db = -3.496
 
 [connection signal="body_entered" from="Navigation2D/Enemy/PlayerDetector" to="Navigation2D/Enemy" method="_on_PlayerDetector_body_entered"]
 [connection signal="body_exited" from="Navigation2D/Enemy/PlayerDetector" to="Navigation2D/Enemy" method="_on_PlayerDetector_body_exited"]
